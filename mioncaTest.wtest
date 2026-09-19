@@ -1,0 +1,8 @@
+import mionca.*
+
+describe "primera parte"{
+
+    test "puede cargar"{
+        
+    }
+}
