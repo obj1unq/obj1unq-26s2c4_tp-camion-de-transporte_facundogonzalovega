@@ -1,0 +1,108 @@
+import mionca.*
+
+describe "primera parte"{
+
+    test "puedo cargar una cosa" {
+        camion.cargar(knightRider)
+
+        assert.equals([knightRider], camion.objetosPeligrosos(0))
+    }
+
+    test "puedo descargar una cosa"{
+        camion.cargar(knightRider)
+        camion.descargar(knightRider)
+
+        assert.equals([], camion.objetosPeligrosos(0))
+    }
+
+    test "no puedo descargar algo que no esta" {
+        assert.throwsException({camion.descargar(knightRider)})
+    }
+
+    test "no puedo cargar una cosa si excede el peso máximo" {
+        residuosRadioactivos.pesoCambiado(1600)
+
+        assert.throwsException({camion.cargar(residuosRadioactivos)})
+    }
+
+    test "el camion esta excedido de peso" {
+        residuosRadioactivos.pesoCambiado(1600)
+        camion.cargar(residuosRadioactivos)
+
+        assert.that(camion.excedidoDePeso())
+    }
+
+    test "obtengo las cosas que superan el nivel de peligrosidad" {
+        camion.cargar(knightRider)
+        camion.cargar(bumblebee)
+
+        assert.equals([bumblebee], camion.objetosPeligrosos(10))
+    }
+
+    test "obtengo las cosas mas peligrosas que algo" {
+        camion.cargar(knightRider)
+        camion.cargar(bumblebee)
+
+        assert.equals([bumblebee], camion.objetosMasPeligrososQue(knightRider))
+    }
+
+    test "el camion puede circular si ninguna cosa supera el nivel maximo de peligrosidad" {
+    camion.cargar(knightRider)
+    camion.cargar(bumblebee)
+
+    assert.that(camion.puedeCircularEnRuta(30))
+    }
+}
+
+describe "agregados al camion" {
+    test "indica si hay algo que pesa entre dos valores" {
+        camion.cargar(knightRider)
+
+        assert.that(camion.tieneAlgoQuePesaEntre(400, 600))
+    }  
+
+    test "devuelve la cosa mas pesada" {
+        camion.cargar(knightRider)
+        camion.cargar(bumblebee)
+
+        assert.equals(bumblebee, camion.cosaMasPesada())
+    }
+
+    test "devuelve la cantidad total de bultos" {
+        camion.cargar(knightRider)
+        camion.cargar(bumblebee)
+
+        assert.equals(3, camion.totalBultos())
+    }
+
+    test "devuelve una lista con los pesos de las cosas" {
+        camion.cargar(knightRider)
+        camion.cargar(bumblebee)
+
+        assert.equals([500, 800], camion.pesos())
+    }
+}
+
+describe "modificaciones al cargar cosas" {
+    test "al cargar bumblebee se transforma en robot" {
+        bumblebee.transformarseEnAuto()
+        camion.cargar(bumblebee)
+
+        assert.equals(30, bumblebee.nivelPeligrosidad())
+    }
+
+    test "al cargar paquete de ladrillos pierde 12 ladrillos" {
+        paqueteLadrillos.cantidadCambiada(100)
+        camion.cargar(paqueteLadrillos)
+
+        assert.equals(88, paqueteLadrillos.pesoLadrillos() / 2)
+    }
+
+    test "al cargar residuos radioactivos aumenta 15 kilos" {
+        residuosRadioactivos.pesoCambiado(100)
+
+        camion.cargar(residuosRadioactivos)
+
+        assert.equals(115, residuosRadioactivos.peso())
+    }
+}
